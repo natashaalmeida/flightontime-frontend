@@ -1,0 +1,18 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estilo base */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f7fa;
+  color: #333;
+}
+
+/* Centralizar conteúdo inicial */
+#root {
+  padding: 20px;
+}
