@@ -1,23 +1,32 @@
-import { useEffect, useState } from "react";
-import { api } from "@services/api";
+// src/pages/Home.jsx
+import { useEffect, useState } from 'react';
+import { api } from '@services/api';
 
 export default function Home() {
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    api.get("/check")
+    setLoading(true);
+    setError(null);
+
+    api.get('/check') // Vai para /api/check → proxy redireciona pro back
       .then(res => setStatus(res.data))
-      .catch(() => setStatus("Erro ao conectar com a API"));
+      .catch(err => setError('Não foi possível conectar com o servidor.'))
+      .finally(() => setLoading(false));
   }, []);
 
   return (
-    <div>
-      <h1>Flight On Time</h1>
-      <p>Status da API: {status}</p>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Status do Servidor</h1>
+
+      {loading && <p>Carregando...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+      {status && <p className="text-green-600">{status}</p>}
     </div>
   );
 }
-
 
 
 /* export default function Home() {

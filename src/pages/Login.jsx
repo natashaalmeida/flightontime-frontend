@@ -1,62 +1,62 @@
+// Login.jsx
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { api } from "./services/api";
 
 export default function Login() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [erro, setErro] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function handleLogin(e) {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
-    // Validação simples
-    if (!email || !senha) {
-      setErro("Preencha todos os campos!");
-      return;
+    try {
+      const response = await api.post("/login", { email, password });
+      const token = response.data.token; // supondo que o back retorne { token: "..." }
+      localStorage.setItem("token", token); // salva token
+      setError("");
+      alert("Login realizado com sucesso!");
+      // aqui você pode redirecionar para Home ou dashboard
+    } catch (err) {
+      console.error("Erro no login:", err);
+      setError("Email ou senha inválidos.");
+    } finally {
+      setLoading(false);
     }
-
-    // Autenticação fictícia (depois integramos ao backend)
-    if (email === "admin@flight.com" && senha === "1234") {
-      navigate("/dashboard");
-    } else {
-      setErro("Credenciais inválidas!");
-    }
-  }
+  };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>FlightOnTime</h2>
-        <p style={{ marginBottom: 10 }}>Faça login para continuar</p>
-
-        <form onSubmit={handleLogin} style={{ width: "100%" }}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={styles.input}
-          />
-
-          <input
-            type="password"
-            placeholder="Senha"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-            style={styles.input}
-          />
-
-          {erro && <p style={styles.error}>{erro}</p>}
-
-          <button type="submit" style={styles.button}>
-            Entrar
-          </button>
-        </form>
-      </div>
+    <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif" }}>
+      <h1>Login</h1>
+      <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", maxWidth: "300px" }}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          style={{ marginBottom: "1rem", padding: "0.5rem" }}
+        />
+        <input
+          type="password"
+          placeholder="Senha"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          style={{ marginBottom: "1rem", padding: "0.5rem" }}
+        />
+        <button type="submit" disabled={loading} style={{ padding: "0.5rem" }}>
+          {loading ? "Entrando..." : "Login"}
+        </button>
+      </form>
+      {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
     </div>
   );
 }
+
 
 const styles = {
   container: {
@@ -87,20 +87,6 @@ const styles = {
     marginBottom: 15,
     borderRadius: 8,
     border: "1px solid #ccc",
-    fontSize: 15,
+    font
   },
-  button: {
-    width: "100%",
-    padding: 12,
-    borderRadius: 8,
-    background: "#4b7bec",
-    color: "white",
-    fontSize: 16,
-    border: "none",
-    cursor: "pointer",
-  },
-  error: {
-    color: "red",
-    marginBottom: 10,
-  },
-};
+}

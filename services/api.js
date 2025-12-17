@@ -1,15 +1,20 @@
-import axios from "axios";
+// src/services/api.jsx
+import axios from 'axios';
 
+// Criando instância do Axios
 export const api = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: '/api', // Proxy redirecionará para http://localhost:8080
+  timeout: 5000,   // Timeout de 5s
 });
 
-export const predictFlight = async (flightData) => {
-  const response = await api.post("/api/prediction", flightData);
-  return response.data;
-};
-
-export default api;
+// Interceptor opcional para log ou tratamento global de erro
+api.interceptors.response.use(
+  response => response,
+  error => {
+    console.error('Erro na API:', error);
+    return Promise.reject(error);
+  }
+);
 
 
 /* import axios from 'axios'
