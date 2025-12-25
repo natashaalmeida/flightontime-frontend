@@ -22,8 +22,7 @@ function PredictFlight() {
     e.preventDefault();
     setLoading(true);
 
-    // tenho que trocar aqui tbm!!!
-    // const response = await predictFlight(form);
+  
     const response = await PredictFlight(form);
     setResult(response);
 

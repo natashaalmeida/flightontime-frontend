@@ -1,67 +1,68 @@
-// src/pages/Home.jsx
-import { useEffect, useState } from 'react';
-import { api } from '@services/api';
+import { useEffect, useState } from "react";
+import { api } from "@services/api";
 
 export default function Home() {
-  const [status, setStatus] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [status, setStatus] = useState("loading"); // loading | ok | error
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-
-    api.get('/check') // Vai para /api/check → proxy redireciona pro back
-      .then(res => setStatus(res.data))
-      .catch(err => setError('Não foi possível conectar com o servidor.'))
-      .finally(() => setLoading(false));
+    api.get("/check")
+      .then(res => {
+        setMessage(res.data);
+        setStatus("ok");
+      })
+      .catch(() => {
+        setMessage("Não foi possível conectar à API");
+        setStatus("error");
+      });
   }, []);
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Status do Servidor</h1>
-
-      {loading && <p>Carregando...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-      {status && <p className="text-green-600">{status}</p>}
-    </div>
-  );
-}
-
-
-/* export default function Home() {
-  return (
-    <div style={{ padding: 40 }}>
+    <main style={styles.container}>
       <h1>Flight On Time ✈️</h1>
-      <p style={{ marginTop: 10 }}>
-        Sistema de previsão de atrasos de voos usando Machine Learning.
-      </p>
 
-      <div style={{ display: "flex", gap: 20, marginTop: 30 }}>
-        <div style={cardStyle}>
-          <h3>📊 Dashboard</h3>
-          <p>Análises e indicadores de atrasos.</p>
-        </div>
+      {status === "loading" && <p className="spinner">🔄 Conectando à API...</p>}
 
-        <div style={cardStyle}>
-          <h3>✈️ Previsão</h3>
-          <p>Descubra se seu voo vai atrasar.</p>
+      {status === "ok" && (
+        <div style={{ ...styles.card, ...styles.success }}>
+          <p>{message}</p>
         </div>
+      )}
 
-        <div style={cardStyle}>
-          <h3>📁 Voos</h3>
-          <p>Lista e histórico de voos.</p>
+      {status === "error" && (
+        <div style={{ ...styles.card, ...styles.error }}>
+          <p>{message}</p>
+          <button onClick={() => window.location.reload()}>
+            Tentar novamente
+          </button>
         </div>
-      </div>
-    </div>
+      )}
+    </main>
   );
 }
 
-const cardStyle = {
-  background: "#fff",
-  padding: 20,
-  borderRadius: 8,
-  width: 220,
-  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+const styles = {
+  container: {
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    background: "#0f172a",
+    color: "#e5e7eb",
+    fontFamily: "system-ui, sans-serif",
+  },
+  card: {
+    padding: "20px 32px",
+    borderRadius: 12,
+    marginTop: 16,
+    minWidth: 280,
+    textAlign: "center",
+  },
+  success: {
+    background: "#064e3b",
+  },
+  error: {
+    background: "#7f1d1d",
+  },
 };
- */
