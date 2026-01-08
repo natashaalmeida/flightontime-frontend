@@ -108,13 +108,13 @@ export default function BuscaVoos() {
               onChange={(e) => setOrigem(e.target.value)}
             />
 
-            {origem && (
+            {origem && !isValidIATA(origem) &&(
               <ul className="absolute z-20 bg-white w-full mt-1 rounded-xl
                              shadow-lg max-h-52 overflow-y-auto border">
                 {filtrarAeroportos(origem).map((a) => (
                   <li
                     key={a.iata}
-                    onClick={() => setOrigem(a.iata)}
+                    onMouseDown={() => setOrigem(a.iata)}
                     className="px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer"
                   >
                     <div className="font-semibold">{a.cidade}</div>
@@ -142,13 +142,13 @@ export default function BuscaVoos() {
               onChange={(e) => setDestino(e.target.value)}
             />
 
-            {destino && (
+            {destino && !isValidIATA(destino) && (
               <ul className="absolute z-20 bg-white w-full mt-1 rounded-xl
                              shadow-lg max-h-52 overflow-y-auto border">
                 {filtrarAeroportos(destino).map((a) => (
                   <li
                     key={a.iata}
-                    onClick={() => setDestino(a.iata)}
+                    onMouseDown={() => setDestino(a.iata)}
                     className="px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer"
                   >
                     <div className="font-semibold">{a.cidade}</div>
