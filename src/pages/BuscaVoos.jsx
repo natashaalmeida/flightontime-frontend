@@ -4,6 +4,9 @@ import { useState } from "react";
 import FlightCard from "../components/CardVoo";
 import SkeletonCard from "../components/SkeletonCard";
 import { aeroportos } from "../data/aeroportos";
+import {companhia as companhias} from "../data/companhia";
+
+
 
 export default function BuscaVoos() {
   const [origem, setOrigem] = useState("");
@@ -13,6 +16,7 @@ export default function BuscaVoos() {
   const [voos, setVoos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState("");
+  const [mostrarCompanhia, setMostrarCompanhia] = useState(false);
 
   const [mostrarOrigem, setMostrarOrigem] = useState(false);
   const [mostrarDestino, setMostrarDestino] = useState(false);
@@ -62,6 +66,14 @@ export default function BuscaVoos() {
     }
   }
 
+  function filtrarCompanhias(valor) {
+  return companhias
+    .filter((c) =>
+      c.name.toLowerCase().includes(valor.toLowerCase())
+    )
+    .slice(0, 6);
+}
+
   function filtrarAeroportos(valor) {
     return aeroportos
       .filter((a) =>
@@ -81,16 +93,42 @@ export default function BuscaVoos() {
 
         {/* Companhia */}
         <div className="mb-4">
-          <label className="block text-sm font-semibold mb-1">
-            Companhia aérea
-          </label>
-          <input
-            className="w-full bg-gray-50 rounded-xl px-4 py-4 text-sm
-                       focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Ex: AZUL, GOL"
-            value={companhia}
-            onChange={(e) => setCompanhia(e.target.value)}
-          />
+         <label className="block text-sm font-semibold mb-1">
+       Companhia aérea
+  </label>
+
+  <div className="relative">
+    <input
+      className="w-full bg-gray-50 rounded-xl px-4 py-4 text-sm
+                 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Digite a companhia"
+      value={companhia}
+      onChange={(e) => {
+        setCompanhia(e.target.value.toUpperCase());
+        setMostrarCompanhia(true);
+      }}
+      onFocus={() => setMostrarCompanhia(true)}
+      onBlur={() => setTimeout(() => setMostrarCompanhia(false), 150)}
+    />
+
+    {mostrarCompanhia && companhia.length >= 2 && (
+      <ul className="absolute z-20 bg-white w-full mt-1 rounded-xl
+                     shadow-lg max-h-52 overflow-y-auto border">
+        {filtrarCompanhias(companhia).map((c) => (
+          <li
+            key={c.name}
+            onMouseDown={() => {
+              setCompanhia(c.name);
+              setMostrarCompanhia(false);
+            }}
+            className="px-4 py-3 text-sm hover:bg-gray-100 cursor-pointer"
+          >
+            {c.name}
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
         </div>
 
         {/* Origem */}
@@ -205,7 +243,7 @@ export default function BuscaVoos() {
         <p className="text-red-500 text-sm mt-3 text-center">{erro}</p>
       )}
 
-      <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 ">
+    <div className="w-full max-w-5xl grid grid-cols-1">
         {loading &&
           Array.from({ length: 1 }).map((_, i) => (
             <SkeletonCard key={i} />

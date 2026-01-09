@@ -1,6 +1,15 @@
 export default function CardVoo({ voo }) {
   return (
-    <div className="bg-white rounded-xl shadow p-4 border-l-4 border-sky-500">
+   <div className="
+  bg-white
+  rounded-xl
+  shadow
+  p-6
+  border-l-4 border-sky-500
+  w-full
+  max-w-2xl
+  mx-auto
+">
       <div className="flex justify-between items-center">
         <span className="font-bold text-lg">
           {voo.origem} → {voo.destino}
