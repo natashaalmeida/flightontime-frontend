@@ -34,6 +34,17 @@ export default function BuscaVoos() {
       return;
     }
 
+    if (!companhia) {
+  setErro("Selecione uma companhia aérea");
+  return;
+}
+
+if (!dataHora) {
+  setErro("Selecione a data e hora do voo");
+  return;
+}
+
+
     try {
       setLoading(true);
       setVoos([]);
@@ -103,10 +114,10 @@ export default function BuscaVoos() {
                  focus:outline-none focus:ring-2 focus:ring-blue-500"
       placeholder="Digite a companhia"
       value={companhia}
-      onChange={(e) => {
-        setCompanhia(e.target.value.toUpperCase());
-        setMostrarCompanhia(true);
-      }}
+     onChange={(e) => {
+  setCompanhia(e.target.value);
+  setMostrarCompanhia(true);
+}}
       onFocus={() => setMostrarCompanhia(true)}
       onBlur={() => setTimeout(() => setMostrarCompanhia(false), 150)}
     />
